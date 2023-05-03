@@ -45,9 +45,9 @@ const Home = () => {
   return (
     <>
         
-        {
+        {/* {
             console.log('mynewState------>',newState)
-        }
+        } */}
         <section className="banner-section">
             <div className="banner-bg bg_img bg-fixed" data-background="assets/images/banner/banner01.jpg" />
             <div className="container">
