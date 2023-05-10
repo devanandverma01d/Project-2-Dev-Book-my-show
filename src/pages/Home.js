@@ -1,6 +1,8 @@
 //1 Import area
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useReducer } from 'react';
+import { getMovies } from '../features/movies/movieSlice';
+import { useDispatch, useSelector } from 'react-redux';
 //2. Function definition area
 
 const intialState = {
@@ -41,13 +43,18 @@ const reducerFn=(oldState=intialState,action)=>{
 }
 
 const Home = () => {
-  const[newState,dispatch]=useReducer(reducerFn,intialState)
+  //const[newState,dispatch]=useReducer(reducerFn,intialState)
+  const dispatch = useDispatch()
+
+  const {movies} = useSelector(store => store.movie)
+
+  useEffect(()=>{
+    dispatch(getMovies())
+  }, [])
+
+
   return (
     <>
-        
-        {/* {
-            console.log('mynewState------>',newState)
-        } */}
         <section className="banner-section">
             <div className="banner-bg bg_img bg-fixed" data-background="assets/images/banner/banner01.jpg" />
             <div className="container">
@@ -335,7 +342,7 @@ const Home = () => {
                     </div>
                     <div className="row mb-30-none justify-content-center">
                     {
-                        newState.movie && newState.movie.map((cv,idx)=>{
+                    movies?.map((cv,idx)=>{
                             return(
                                 <div key={idx} className="col-sm-6 col-lg-4">
                             <div className="movie-grid">
@@ -367,10 +374,7 @@ const Home = () => {
                             </div>
                                 </div>
                             )
-                        })
-                    }
-                        
-                        
+                        })}
                     </div>
                 </div>
                 <div className="article-section padding-bottom">

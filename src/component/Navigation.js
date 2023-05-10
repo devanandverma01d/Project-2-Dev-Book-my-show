@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { updateToken, userLogout } from '../features/auth/authSlice';
 
 const Navigation = () => {
+    //const jwtToken=localStorage.getItem("jwt_token")
+    const dispatch = useDispatch()
+    const {token} = useSelector(store=>store.auth)
+    
+    const jwtToken=localStorage.getItem("jwt_token")
+        useEffect(()=>{
+        dispatch(updateToken(jwtToken))
+    },[token])
+
+    const onLogout = ()=>{
+        dispatch(userLogout())
+    }
   return (
     <>
         <ul className="menu">
@@ -81,7 +95,20 @@ const Navigation = () => {
                             </ul>
                         </li>
                         <li className="header-button pr-0">
-                            <Link to="/sign-up">join us</Link>
+                            {
+                                token?
+                                <button 
+                                    type="button" 
+                                    style={{backgroundColor:"blueviolet",color:"white",borderRadius:"10px"}}
+                                    onClick={onLogout}
+                                >
+                                    Logout
+                                </button>
+                                : 
+                                <Link to="/sign-up">join us</Link>
+                            
+                            }
+                            
                         </li>
         </ul>
     </>

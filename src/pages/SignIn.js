@@ -1,6 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { login } from '../features/auth/authSlice';
 
 const SignIn = () => {
+    const [payload,setPayload] = useState({
+        "identifier":null,
+        "password":null,
+    });
+    const {emails, password} = useParams()
+    let dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const onLogin = (e)=>{
+        
+        e.preventDefault()
+        //console.log(payload);
+        dispatch(login(payload))
+        alert("loggedIn successfully!");
+        navigate('/')
+    }
+    let handleChange = (e)=>{
+        console.log(e.target.value)
+        setPayload({
+            ...payload,
+            [e.target.name]:e.target.value
+        });
+    }
   return (
     <>
         <section className="account-section bg_img" data-background="assets/images/account/account-bg.jpg">
@@ -11,17 +37,17 @@ const SignIn = () => {
                         <span className="cate">hello</span>
                         <h2 className="title">welcome back</h2>
                         </div>
-                        <form className="account-form">
+                        <form onSubmit={onLogin} className="account-form">
                             <div className="form-group">
                                 <label htmlFor="email2">Email<span>*</span></label>
-                                <input type="text" placeholder="Enter Your Email" id="email2" required />
+                                <input  type="email" name="identifier" value={payload.email} onChange={handleChange} placeholder="Enter Your Email" id="email2" required />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="pass3">Password<span>*</span></label>
-                                <input type="password" placeholder="Password" id="pass3" required />
+                                <input name="password" value={payload.password} onChange={handleChange} type="password" placeholder="Password" id="pass3" required />
                             </div>
                             <div className="form-group checkgroup">
-                                <input type="checkbox" id="bal2" required defaultChecked />
+                                <input  type="checkbox" id="bal2" required defaultChecked />
                                 <label htmlFor="bal2">remember password</label>
                                 <a href="#0" className="forget-pass">Forget Password</a>
                             </div>
@@ -30,7 +56,7 @@ const SignIn = () => {
                             </div>
                         </form>
                         <div className="option">
-                            Don't have an account? <a href="sign-up.html">sign up now</a>
+                            Don't have an account? <Link to="/sign-up">sign up now</Link>
                         </div>
                         <div className="or"><span>Or</span></div>
                         <ul className="social-icons">

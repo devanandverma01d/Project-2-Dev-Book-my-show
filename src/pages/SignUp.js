@@ -1,31 +1,92 @@
 //1. Import area
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { selectUserInfo } from '../features/auth/authSlice'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUserInfo, userSignUp } from '../features/auth/authSlice'
+import Loader from './Loader'
+import swal from 'sweetalert'
+import { useNavigate } from 'react-router-dom'
 //2.definition area
 const SignUp = () => {
     //2.1 Hooks area
-    const[payload,setPayload]=useState()
-    const userInfo= useSelector(selectUserInfo)
+    const[userData,setUserData]=useState({
+        username:"",
+        email:"",
+        password:"",
+        confirmPassword:""
+
+    })
+    const[count, setCount] = useState(0)
+    const userInfo= useSelector((store) => store.auth)
+    //console.log("userInfo----->", userInfo)
+    const {loading, error, success, errorMsg} = userInfo
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     
+    useEffect(()=>{
+        const {email, password} = userData
+        if(success){
+            swal("Good job...!","Registered successfully", "success")
+            setTimeout(()=>{
+                navigate(`/sign-in/${email}/${password}`)
+            }, 2000)
+        }
+        if (error){
+            swal("Bad job...!",errorMsg, "error")
+        }
+    }, [count, error, success])
+    
+    //console.log('payload---->',payload)
     //2.2 function/method definition area
     const handleChage=(e)=>{
 
         // console.log('e.target.name------>',e.target.name)
         // console.log('e.target.value----->',e.target.value)
-        setPayload({
-            ...payload,
-            [e.target.name]:e.target.value,
-        })
+        const {name, value} = e.target
+
+       // console.log(payload)
+        setUserData((prevState)=> ({
+            ...prevState, [name]:value
+        }))
     }
     let submitData=()=>{
-        console.log('To be submitted data------->',payload)
+        const {password, confirmPassword} = userData
+        if(password === confirmPassword){
+            setCount((prevCount)=> prevCount+1)
+        const {username, email, password} = userData
+        // const {confirmPassword, ...datas} = userData
+        // console.log("datas----->", datas,)
+        const data = {
+            "username": username,
+            "email": email,
+            "password": password
+        }
+
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(data)
+        }
+
+        dispatch(userSignUp(options))
+        }
+        else{
+            swal("Aww ....!","Password and Confirm password mismatch", "error")
+        }
+        
+        //alert("data is Submitted")
+        //console.log('To be submitted data------->',options)
+
     }
+    console.log("count------->",count)
     //2.3 return statement
   return (
     <>
         {/* {console.log('userInfo----->',userInfo)}
         {console.log('payload----->',payload)} */}
+        {}
         <section className="account-section bg_img" data-background="assets/images/account/account-bg.jpg">
             <div className="container">
                 <div className="padding-top padding-bottom">
@@ -56,7 +117,8 @@ const SignUp = () => {
                                 <label htmlFor="bal">I agree to the <a href="#0">Terms, Privacy Policy</a> and <a href="#0">Fees</a></label>
                             </div>
                             <div className="form-group text-center">
-                                <input type="button" onClick={submitData} defaultValue="Sign Up" />
+                                {/* <input type="button" onClick={submitData} value={loading? <Loader />:"Sign-up"} /> */}
+                                <button type="button" onClick={submitData} >{loading? <Loader />:"Sign-up"}</button>
                             </div>
                         </form>
                         <div className="option">

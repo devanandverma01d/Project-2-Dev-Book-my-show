@@ -33,6 +33,7 @@ function App() {
           <Route path='/movie-checkout' element={<MovieCheckout />}></Route>
           <Route path='/popcorn' element={<PopCorn />}></Route>
         </Route>
+        <Route path='sign-in/:emails/:password' element={<SignIn />}></Route>
         <Route path='/sign-in' element={<SignIn />}></Route>
         <Route path='/sign-up' element={<SignUp />}></Route>
         <Route path='*' element={<NoPage />}></Route>
